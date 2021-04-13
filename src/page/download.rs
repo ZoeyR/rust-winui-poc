@@ -1,5 +1,5 @@
-use bindings::Windows::UI::Xaml::*;
 use bindings::Windows::UI::Xaml::Controls::*;
+use bindings::Windows::UI::Xaml::*;
 use windows::{HString, Object};
 
 use std::convert::TryInto;

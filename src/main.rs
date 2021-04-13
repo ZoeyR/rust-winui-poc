@@ -5,9 +5,7 @@ mod page;
 use interop::{ro_initialize, IDesktopWindowXamlSourceNative, RoInitType};
 
 use bindings::Windows::UI::Xaml::Hosting::*;
-use bindings::Windows::UI::Xaml::{
-    RoutedEventHandler,
-};
+use bindings::Windows::UI::Xaml::RoutedEventHandler;
 use winit::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
