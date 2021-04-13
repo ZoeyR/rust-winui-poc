@@ -5,7 +5,6 @@ mod page;
 use interop::{ro_initialize, IDesktopWindowXamlSourceNative, RoInitType};
 
 use bindings::Windows::UI::Xaml::Hosting::*;
-use bindings::Windows::UI::Xaml::RoutedEventHandler;
 use winit::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
@@ -46,15 +45,7 @@ fn run() -> windows::Result<()> {
         );
     }
 
-    let landing_page = page::landing::LandingPage::new()?;
-
-    let de = desktop_source.clone();
-    landing_page
-        .install_button
-        .Click(RoutedEventHandler::new(move |_, _| {
-            let download_page = page::download::DownloadPage::new()?;
-            de.SetContent(download_page.page())
-        }))?;
+    let landing_page = page::landing::LandingPage::new(&desktop_source)?;
     let _ = desktop_source.SetContent(landing_page.page())?;
 
     event_loop.run(move |event, _, control_flow| {

@@ -1,8 +1,9 @@
+use bindings::Windows::UI::Core::*;
 use bindings::Windows::UI::Xaml::Controls::*;
+use bindings::Windows::UI::Xaml::Hosting::*;
 use bindings::Windows::UI::Xaml::*;
-use windows::{HString, Object};
-
 use std::convert::TryInto;
+use windows::{HString, Object};
 
 pub struct DownloadPage {
     root: Page,
@@ -12,7 +13,7 @@ pub struct DownloadPage {
 }
 
 impl DownloadPage {
-    pub fn new() -> windows::Result<DownloadPage> {
+    pub fn new(ctx: &DesktopWindowXamlSource) -> windows::Result<DownloadPage> {
         let page = DownloadPage {
             root: Page::new()?,
             progress: ProgressBar::new()?,
@@ -21,6 +22,34 @@ impl DownloadPage {
         };
 
         init(&page)?;
+
+        let progress = page.progress.clone();
+        let dispatcher = Window::Current().unwrap().Dispatcher().unwrap();
+        let ctx = ctx.clone();
+
+        std::thread::spawn(move || {
+            for n in 1..=10 {
+                std::thread::sleep(std::time::Duration::from_millis(1000));
+                let progress = progress.clone();
+                dispatcher
+                    .RunAsync(
+                        CoreDispatcherPriority::Low,
+                        DispatchedHandler::new(move || progress.SetValue2(10.0 * (n as f64))),
+                    )
+                    .unwrap();
+            }
+
+            std::thread::sleep(std::time::Duration::from_millis(1000));
+            dispatcher
+                .RunAsync(
+                    CoreDispatcherPriority::Low,
+                    DispatchedHandler::new(move || {
+                        let completion_page = super::completion::CompletionPage::new()?;
+                        ctx.SetContent(completion_page.page())
+                    }),
+                )
+                .unwrap();
+        });
 
         Ok(page)
     }
@@ -96,6 +125,8 @@ fn init(page: &DownloadPage) -> windows::Result<()> {
         Right: 48.0,
         Bottom: 0.0,
     })?;
+    progress.SetMinimum(0.0)?;
+    progress.SetMaximum(100.0)?;
 
     let progress_text = &page.progress_text;
     progress_text.SetText("Here is progress text")?;

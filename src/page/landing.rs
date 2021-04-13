@@ -1,4 +1,5 @@
 use bindings::Windows::UI::Xaml::Controls::*;
+use bindings::Windows::UI::Xaml::Hosting::*;
 use bindings::Windows::UI::Xaml::*;
 use windows::{HString, Object};
 
@@ -11,7 +12,7 @@ pub struct LandingPage {
 }
 
 impl LandingPage {
-    pub fn new() -> windows::Result<LandingPage> {
+    pub fn new(ctx: &DesktopWindowXamlSource) -> windows::Result<LandingPage> {
         let page = LandingPage {
             root: Page::new()?,
             combobox: ComboBox::new()?,
@@ -19,7 +20,7 @@ impl LandingPage {
         };
 
         init(&page)?;
-
+        hook_event_handlers(ctx, &page)?;
         Ok(page)
     }
 
@@ -28,7 +29,33 @@ impl LandingPage {
     }
 }
 
+fn hook_event_handlers(ctx: &DesktopWindowXamlSource, page: &LandingPage) -> windows::Result<()> {
+    let combo = &page.combobox;
+    let button = page.install_button.clone();
+    combo.SelectionChanged(SelectionChangedEventHandler::new(move |_, _| {
+        button.SetIsEnabled(true)
+    }))?;
+
+    let ctx = ctx.clone();
+    page.install_button
+        .Click(RoutedEventHandler::new(move |_, _| {
+            let download_page = super::download::DownloadPage::new(&ctx)?;
+            ctx.SetContent(download_page.page())
+        }))?;
+    Ok(())
+}
+
 fn init(page: &LandingPage) -> windows::Result<()> {
+    layout_install_button(&page.install_button)?;
+    let stack = create_stack(&page.combobox)?;
+    let grid = create_grid(&stack, &page.install_button)?;
+
+    page.root.SetContent(grid)?;
+
+    Ok(())
+}
+
+fn create_grid(stack: &StackPanel, button: &Button) -> windows::Result<Grid> {
     let grid = Grid::new()?;
     let row_1 = RowDefinition::new()?;
     row_1.SetHeight(GridLength {
@@ -45,18 +72,13 @@ fn init(page: &LandingPage) -> windows::Result<()> {
     grid.RowDefinitions()?.Append(&row_1)?;
     grid.RowDefinitions()?.Append(&row_2)?;
 
-    let stack = create_stack(page)?;
-    initialize_install_button(page)?;
+    grid.Children()?.Append(stack)?;
+    grid.Children()?.Append(button)?;
 
-    grid.Children()?.Append(&stack)?;
-    grid.Children()?.Append(&page.install_button)?;
-
-    page.root.SetContent(grid)?;
-
-    Ok(())
+    Ok(grid)
 }
 
-fn create_stack(page: &LandingPage) -> windows::Result<StackPanel> {
+fn create_stack(combo: &ComboBox) -> windows::Result<StackPanel> {
     let stack = StackPanel::new()?;
     stack.SetVerticalAlignment(VerticalAlignment::Center)?;
     Grid::SetRow(&stack, 0)?;
@@ -72,7 +94,6 @@ fn create_stack(page: &LandingPage) -> windows::Result<StackPanel> {
         Bottom: 64.0,
     })?;
 
-    let combo = &page.combobox;
     combo.SetFontSize(17.0)?;
     combo.SetWidth(300.0)?;
     combo.SetHorizontalAlignment(HorizontalAlignment::Center)?;
@@ -81,19 +102,13 @@ fn create_stack(page: &LandingPage) -> windows::Result<StackPanel> {
         combo.Items()?.Append(objtext)?;
     }
 
-    let button = page.install_button.clone();
-    combo.SelectionChanged(SelectionChangedEventHandler::new(move |_, _| {
-        button.SetIsEnabled(true)
-    }))?;
-
     stack.Children()?.Append(&title)?;
     stack.Children()?.Append(&*combo)?;
 
     Ok(stack)
 }
 
-fn initialize_install_button(page: &LandingPage) -> windows::Result<()> {
-    let button = &page.install_button;
+fn layout_install_button(button: &Button) -> windows::Result<()> {
     let objtext: Object = HString::from("Install").try_into()?;
     button.SetContent(objtext)?;
     button.SetHorizontalAlignment(HorizontalAlignment::Right)?;
