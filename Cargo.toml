@@ -11,6 +11,7 @@ winit = "0.24"
 windows = "0.8"
 bindings = { path = "./bindings"}
 iso639 = "0.1"
+xml-rs = "0.8"
 
 [build-dependencies]
 embed-resource = "1.3"

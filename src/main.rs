@@ -1,7 +1,8 @@
-#![windows_subsystem = "windows"]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod interop;
 mod page;
+mod parse_ui;
 use interop::{ro_initialize, IDesktopWindowXamlSourceNative, RoInitType};
 
 use bindings::Windows::UI::Xaml::Hosting::*;
@@ -45,7 +46,7 @@ fn run() -> windows::Result<()> {
         );
     }
 
-    let landing_page = page::landing::LandingPage::new(&desktop_source)?;
+    let landing_page = page::landing_v2::LandingV2::new(&desktop_source)?;
     let _ = desktop_source.SetContent(landing_page.page())?;
 
     event_loop.run(move |event, _, control_flow| {

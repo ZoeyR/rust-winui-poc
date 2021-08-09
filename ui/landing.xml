@@ -1,0 +1,13 @@
+<Grid>
+    <row height="*" />
+    <row height="auto" />
+    <Text font_size="24.0" halign="center" margin_bottom="64.0" row="0">
+        Select language to install:
+    </Text>
+    <Stack valign="center" row="1">
+        <Text font_size="24.0" halign="center" margin_bottom="64.0">
+            Select language to install:
+        </Text>
+        <Combo id="combo" font_size="17.0" width="300.0" halign="center"/>
+    </Stack>
+</Grid>

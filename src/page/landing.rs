@@ -8,7 +8,7 @@ use std::convert::TryInto;
 pub struct LandingPage {
     root: Page,
     combobox: ComboBox,
-    pub install_button: Button,
+    install_button: Button,
 }
 
 impl LandingPage {
@@ -39,8 +39,8 @@ fn hook_event_handlers(ctx: &DesktopWindowXamlSource, page: &LandingPage) -> win
     let ctx = ctx.clone();
     page.install_button
         .Click(RoutedEventHandler::new(move |_, _| {
-            let download_page = super::download::DownloadPage::new(&ctx)?;
-            ctx.SetContent(download_page.page())
+            let next = super::landing_v2::LandingV2::new(&ctx)?;
+            ctx.SetContent(next.page())
         }))?;
     Ok(())
 }
