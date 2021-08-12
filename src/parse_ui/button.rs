@@ -41,7 +41,7 @@ pub fn build(
         match reader.next().unwrap() {
             XmlEvent::EndElement { .. } => break,
             XmlEvent::Characters(content) => {
-                button.SetContent(get_text_object(content.trim())?)?;
+                button.SetContent(get_inspectable(content.trim())?)?;
             }
             x => panic!("Unknown button child: {:?}", x),
         }

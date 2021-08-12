@@ -1,6 +1,6 @@
 use bindings::Windows::UI::Xaml::{HorizontalAlignment, Thickness, VerticalAlignment};
 use std::convert::TryInto;
-use windows::{Error, HString, Object, Result, HRESULT};
+use windows::{Error, IInspectable, Result, HRESULT, HSTRING};
 
 pub fn parse_f64(s: &str) -> Result<f64> {
     s.parse().map_err(|e| {
@@ -91,9 +91,9 @@ pub fn parse_margin(s: &str) -> Result<Thickness> {
     }
 }
 
-pub fn get_text_object<T>(text: T) -> Result<Object>
+pub fn get_inspectable<T>(text: T) -> Result<IInspectable>
 where
-    HString: From<T>,
+    HSTRING: From<T>,
 {
-    HString::from(text).try_into()
+    HSTRING::from(text).try_into()
 }

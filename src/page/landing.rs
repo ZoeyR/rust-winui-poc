@@ -1,9 +1,9 @@
 use bindings::Windows::UI::Xaml::Controls::*;
 use bindings::Windows::UI::Xaml::Hosting::*;
 use bindings::Windows::UI::Xaml::*;
-use windows::{HString, Object};
-
 use std::convert::TryInto;
+use windows::IInspectable;
+use windows::HSTRING;
 
 pub struct LandingPage {
     root: Page,
@@ -98,7 +98,7 @@ fn create_stack(combo: &ComboBox) -> windows::Result<StackPanel> {
     combo.SetWidth(300.0)?;
     combo.SetHorizontalAlignment(HorizontalAlignment::Center)?;
     for lang in create_langs() {
-        let objtext: Object = HString::from(lang).try_into()?;
+        let objtext: IInspectable = HSTRING::from(lang).try_into()?;
         combo.Items()?.Append(objtext)?;
     }
 
@@ -109,7 +109,7 @@ fn create_stack(combo: &ComboBox) -> windows::Result<StackPanel> {
 }
 
 fn layout_install_button(button: &Button) -> windows::Result<()> {
-    let objtext: Object = HString::from("Install").try_into()?;
+    let objtext: IInspectable = HSTRING::from("Install").try_into()?;
     button.SetContent(objtext)?;
     button.SetHorizontalAlignment(HorizontalAlignment::Right)?;
     button.SetVerticalAlignment(VerticalAlignment::Bottom)?;

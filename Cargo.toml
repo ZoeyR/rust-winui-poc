@@ -7,8 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-winit = "0.24"
-windows = "0.8"
+winit = "0.25"
+windows = "0.18"
 bindings = { path = "./bindings"}
 iso639 = "0.1"
 xml-rs = "0.8"

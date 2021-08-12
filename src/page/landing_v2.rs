@@ -19,7 +19,7 @@ impl LandingV2 {
         for lang in create_langs() {
             combo
                 .Items()?
-                .Append(crate::parse_ui::utils::get_text_object(lang)?)?;
+                .Append(crate::parse_ui::utils::get_inspectable(lang)?)?;
         }
 
         {
