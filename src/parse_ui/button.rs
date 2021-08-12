@@ -3,8 +3,6 @@ use bindings::Windows::UI::Xaml::{
     Controls::{Button, Grid},
     Thickness,
 };
-use std::convert::TryInto;
-use windows::{HString, Object};
 
 pub fn build(
     elements: &mut HashMap<String, Element>,

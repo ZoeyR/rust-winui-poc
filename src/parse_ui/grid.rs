@@ -11,9 +11,10 @@ pub fn build(
 ) -> windows::Result<UIElement> {
     let grid = Grid::new()?;
     for attr in attributes {
-        match attr {
-            x => panic!("Unknown grid attribute: {:?}", x.name.local_name),
-        }
+        panic!("Unknown grid attribute: {:?}", attr.name.local_name)
+        //match attr.name.local_name.as_str() {
+        //    x => panic!("Unknown grid attribute: {:?}", x),
+        //}
     }
     loop {
         match reader.next().unwrap() {

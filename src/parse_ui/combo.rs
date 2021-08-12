@@ -1,7 +1,5 @@
 use super::prelude::*;
 use bindings::Windows::UI::Xaml::Controls::ComboBox;
-use std::convert::TryInto;
-use windows::{HString, Object};
 
 pub fn build(
     elements: &mut HashMap<String, Element>,

@@ -6,7 +6,7 @@ use bindings::Windows::UI::Xaml::{
 use super::prelude::*;
 
 pub fn build(
-    elements: &mut HashMap<String, Element>,
+    _elements: &mut HashMap<String, Element>,
     reader: &mut Reader,
     attributes: Vec<OwnedAttribute>,
 ) -> windows::Result<UIElement> {
