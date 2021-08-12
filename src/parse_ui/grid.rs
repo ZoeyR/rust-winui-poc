@@ -1,12 +1,14 @@
-use bindings::Windows::UI::Xaml::{Controls::{Grid, RowDefinition}, GridLength, GridUnitType};
 use super::prelude::*;
+use bindings::Windows::UI::Xaml::{
+    Controls::{Grid, RowDefinition},
+    GridLength, GridUnitType,
+};
 
 pub fn build(
     elements: &mut HashMap<String, Element>,
     reader: &mut Reader,
-    attributes: &[OwnedAttribute],
-) -> windows::Result<UIElement>
-{
+    attributes: Vec<OwnedAttribute>,
+) -> windows::Result<UIElement> {
     let grid = Grid::new()?;
     for attr in attributes {
         match attr {
@@ -16,17 +18,25 @@ pub fn build(
     loop {
         match reader.next().unwrap() {
             XmlEvent::EndElement { .. } => break,
-            XmlEvent::StartElement { name, attributes, namespace: _ } => {
+            XmlEvent::StartElement {
+                name,
+                attributes,
+                namespace: _,
+            } => {
                 if name.local_name == "row" {
                     let row = build_row(&attributes)?;
                     grid.RowDefinitions()?.Append(&row)?;
-                    assert!(matches!(reader.next().unwrap(), XmlEvent::EndElement { .. }));
+                    assert!(matches!(
+                        reader.next().unwrap(),
+                        XmlEvent::EndElement { .. }
+                    ));
                 } else {
-                    let element = super::generate_element(elements, reader, &name.local_name, &attributes)?;
+                    let element =
+                        super::generate_element(elements, reader, &name.local_name, attributes)?;
                     grid.Children()?.Append(element)?;
                 }
-            },
-            XmlEvent::Whitespace(_) => {},
+            }
+            XmlEvent::Whitespace(_) => {}
             x => panic!("Unknown button child: {:?}", x),
         }
     }
@@ -40,10 +50,10 @@ fn build_row(attributes: &[OwnedAttribute]) -> windows::Result<RowDefinition> {
             "height" => {
                 let height = match grid_length(&attr.value) {
                     Some(height) => height,
-                    None => panic!("Unknown grid unit type {:?}", attr.value)
+                    None => panic!("Unknown grid unit type {:?}", attr.value),
                 };
                 row.SetHeight(height)?;
-            },
+            }
             x => panic!("Unknown row attribute: {:?}", x),
         }
     }
@@ -53,11 +63,20 @@ fn build_row(attributes: &[OwnedAttribute]) -> windows::Result<RowDefinition> {
 
 fn grid_length(length: &str) -> Option<GridLength> {
     match length {
-        "*" => Some(GridLength { Value: 1.0, GridUnitType: GridUnitType::Star }),
-        "auto" => Some(GridLength { Value: 1.0, GridUnitType: GridUnitType::Auto }),
-        x  => {
+        "*" => Some(GridLength {
+            Value: 1.0,
+            GridUnitType: GridUnitType::Star,
+        }),
+        "auto" => Some(GridLength {
+            Value: 1.0,
+            GridUnitType: GridUnitType::Auto,
+        }),
+        x => {
             let val: f64 = x.parse().ok()?;
-            Some(GridLength { Value: val, GridUnitType: GridUnitType::Pixel })
-        },
+            Some(GridLength {
+                Value: val,
+                GridUnitType: GridUnitType::Pixel,
+            })
+        }
     }
 }

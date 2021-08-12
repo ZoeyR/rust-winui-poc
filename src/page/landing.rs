@@ -85,7 +85,7 @@ fn create_stack(combo: &ComboBox) -> windows::Result<StackPanel> {
 
     let title = TextBlock::new().unwrap();
     title.SetFontSize(24.0)?;
-    title.SetText("Select Language to Install:")?;
+    title.SetText("Old\nSelect Language to Install:")?;
     title.SetHorizontalAlignment(HorizontalAlignment::Center)?;
     title.SetMargin(Thickness {
         Left: 0.0,

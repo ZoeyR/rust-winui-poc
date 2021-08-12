@@ -1,13 +1,14 @@
 <Grid>
     <row height="*" />
     <row height="auto" />
-    <Text font_size="24.0" halign="center" margin_bottom="64.0" row="0">
-        Select language to install:
-    </Text>
-    <Stack valign="center" row="1">
+    <Stack valign="center" row="0">
         <Text font_size="24.0" halign="center" margin_bottom="64.0">
-            Select language to install:
+New
+Select Language to Install:
         </Text>
         <Combo id="combo" font_size="17.0" width="300.0" halign="center"/>
     </Stack>
+    <Button row="1" id="install_button" halign="right" valign="bottom" margin="8,8,12,8" min_width="80" enabled="false">
+        Install
+    </Button>
 </Grid>

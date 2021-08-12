@@ -16,6 +16,12 @@ impl LandingV2 {
         let button = elements["install_button"].as_button().unwrap();
         let combo = elements["combo"].as_combo_box().unwrap();
 
+        for lang in create_langs() {
+            combo
+                .Items()?
+                .Append(crate::parse_ui::utils::get_text_object(lang)?)?;
+        }
+
         {
             let button = button.clone();
             combo.SelectionChanged(SelectionChangedEventHandler::new(move |_, _| {
@@ -36,4 +42,17 @@ impl LandingV2 {
     pub fn page(&self) -> &Page {
         &self.page
     }
+}
+
+fn create_langs() -> Vec<&'static str> {
+    let tags = vec!["fo", "se", "sma", "smj", "smn", "sms", "crk", "srs"];
+    tags.iter()
+        .map(|s| {
+            let record = iso639::autonym::get(s).unwrap();
+            match record.autonym {
+                Some(auto) => auto,
+                None => record.name,
+            }
+        })
+        .collect()
 }
